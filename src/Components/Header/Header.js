@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
 import './Header.css';
 import OlxLogo from '../../assets/OlxLogo';
 import Search from '../../assets/Search';
 import Arrow from '../../assets/Arrow';
 import SellButton from '../../assets/SellButton';
 import SellButtonPlus from '../../assets/SellButtonPlus';
+
 import { AuthContext, FirebaseContext } from '../../store/Context';
 function Header() {
   const history = useHistory()
@@ -15,7 +16,8 @@ function Header() {
     <div className="headerParentDiv">
       <div className="headerChildDiv">
         <div className="brandName">
-          <OlxLogo></OlxLogo>
+          <Link to='/'><OlxLogo>  </OlxLogo></Link>
+          
         </div>
         <div className="placeSearch">
           <Search></Search>
@@ -46,7 +48,7 @@ function Header() {
               history.push('/login');
             } 
           }}>
-          <span>{
+          <span className='loginlogout'>{
             user
               ? user.displayName
               : 'Login'
@@ -54,7 +56,7 @@ function Header() {
           <hr />
         </div>
         {
-          user && <span
+          user && <span className='logoutname'
             onClick={() => {
               firebase
                 .auth()
@@ -63,15 +65,20 @@ function Header() {
             }}>Logout</span>
         }
 
-        <div className="sellMenu" onClick={()=>{
-           history.push('/create');
-        }}>
-          <SellButton></SellButton>
-          <div className="sellMenuContent">
-            <SellButtonPlus></SellButtonPlus>
-            <span>SELL</span>
-          </div>
-        </div>
+<div className="sellMenu" onClick={() => {
+  if (!user) {
+    history.push('/login');
+  } else {
+    history.push('/create');
+  }
+}}>
+  <SellButton></SellButton>
+  <div className="sellMenuContent">
+    <SellButtonPlus></SellButtonPlus>
+    <span>SELL</span>
+  </div>
+</div>
+
       </div>
     </div>
   );

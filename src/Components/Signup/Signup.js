@@ -1,32 +1,63 @@
-import React,{useState,useContext} from 'react';
-import { FirebaseContext } from "../../store/Context"; 
+import React, { useState, useContext } from 'react';
+import { FirebaseContext } from "../../store/Context";
 import Logo from '../../olx-logo.png';
 import './Signup.css';
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
+
+
 export default function Signup() {
-  const history=useHistory()
-  const [username,setUsername] = useState('');
-  const [email,setEmail] = useState('');
-  const [phone,setPhone] = useState('');
-  const [password,setPassword] = useState('');
-  const {firebase} =useContext(FirebaseContext)
+  const history = useHistory();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null); // State to store error messages
+  const { firebase } = useContext(FirebaseContext)
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(firebase);
+    setError(null); // Reset error state on form submit
+
+    
+  // Form validation
+  if (!username || username.trim() === '') {
+    setError('Please enter a valid username.');
+    return;
+  }
+
+  if (!email) {
+    setError('Please enter an email address.');
+    return;
+  }
+
+  if (!phone || phone.trim().length !== 10) {
+    setError('Please enter a valid 10-digit phone number.');
+    return;
+  }
+
+
+  if (!password) {
+    setError('Password should be atleast 4 cahracters');
+    return;
+  }
+
+
+    // Signup with Firebase
     firebase.auth().createUserWithEmailAndPassword(email, password).then((result) => {
       result.user.updateProfile({ displayName: username }).then(() => {
         console.log('userId from signup', result.user.uid);
-        firebase.firestore().collection('users').doc(result.user.uid).set({ 
-          id:result.user.uid,
+        firebase.firestore().collection('users').doc(result.user.uid).set({
+          id: result.user.uid,
           username: username,
           phone: phone
         }).then(() => {
           history.push('/login');
         });
       });
+    }).catch((error) => {
+      setError(error.message); // Set error message from Firebase
     });
   }
-  
 
   return (
     <div>
@@ -39,10 +70,9 @@ export default function Signup() {
             className="input"
             type="text"
             value={username}
-            onChange={(e)=>setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             id="fname"
             name="name"
-            defaultValue="John"
           />
           <br />
           <label htmlFor="fname">Email</label>
@@ -51,10 +81,9 @@ export default function Signup() {
             className="input"
             type="email"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             id="fname"
             name="email"
-            defaultValue="John"
           />
           <br />
           <label htmlFor="lname">Phone</label>
@@ -63,10 +92,9 @@ export default function Signup() {
             className="input"
             type="number"
             value={phone}
-            onChange={(e)=>setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value)}
             id="lname"
             name="phone"
-            defaultValue="Doe"
           />
           <br />
           <label htmlFor="lname">Password</label>
@@ -75,16 +103,16 @@ export default function Signup() {
             className="input"
             type="password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             id="lname"
             name="password"
-            defaultValue="Doe"
           />
           <br />
+          {error && <p className="error" style={{ color: 'red' }}>{error}*</p>} {/* Display error message */}
           <br />
           <button>Signup</button>
         </form>
-        <a>Login</a>
+      <Link to='/login'>Login</Link>
       </div>
     </div>
   );

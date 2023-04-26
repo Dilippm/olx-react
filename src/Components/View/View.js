@@ -8,16 +8,17 @@ function View() {
  
   const {firebase} =useContext(FirebaseContext)
   useEffect(() => {
-    
-      console.log(postDetails);
+    // console.log("daaaaata");
+    //   console.log(postDetails);
       const { userId } = postDetails;
+      // console.log(userId);
       firebase.firestore().collection('users').where('id', '==', userId).get().then((res) => {
           res.forEach((doc) => {
             setUserDetails(doc.data());
           });
         });
     
-  }, [])
+  }, [postDetails,firebase])
   return (
     <div className="viewParentDiv">
       <div className="imageShowDiv">

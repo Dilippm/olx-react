@@ -94,8 +94,7 @@
   margin-right: 5px;
 }
 
-.language svg {
-}
+
 
 .span {
   text-decoration: none;
@@ -104,6 +103,7 @@
   text-overflow: ellipsis;
   font-weight: bolder;
   margin-right: 5px;
+  cursor: pointer;
 }
 
 .loginPage hr {
@@ -147,7 +147,15 @@
   letter-spacing: 0.5px;
   color: #002f34;
 }
+.loginlogout{
+  font-weight: bolder;
+  cursor: pointer;
 
+}
+.logoutname{
+  cursor: pointer;
+  font-weight: bolder;
+}
 /* .sellMenu .sellMenuContent svg {
   align-items: center;
 } */
